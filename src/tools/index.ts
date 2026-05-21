@@ -47,9 +47,14 @@ function safeTool<T>(
 }
 
 export function registerGscTools(server: McpServer, auth: GoogleAuth): void {
-    server.tool('ping', 'Health check — returns pong if server is running', {}, async () => ({
-        content: [{ type: 'text', text: 'pong' }],
-    }));
+    server.tool(
+        'gsc_mcp_server_ping',
+        'Liveness check for this MCP server process (local Node.js). Returns pong. Does not call Google Search Console.',
+        {},
+        async () => ({
+            content: [{ type: 'text', text: 'pong' }],
+        })
+    );
 
     server.tool(
         'gsc_list_sites',
