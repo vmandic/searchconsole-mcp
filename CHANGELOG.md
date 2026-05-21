@@ -2,6 +2,17 @@
 
 All notable changes to this project are documented here. Versioning follows [Semantic Versioning](https://semver.org/). Releases are tagged on GitHub to match `package.json`.
 
+## [1.0.1] - 2026-05-21
+
+### Added
+
+- Cursor **ship-release** skill and path-scoped **`.cursor/rules/`** for agents (core, code-style, architecture, tests, security, git).
+- Trimmed **AGENTS.md** as an index to rules and skills.
+
+### Notes
+
+- Runtime bundle unchanged since 1.0.0; patch aligns npm and GitHub release with current repository docs and maintainer workflow.
+
 ## [1.0.0] - 2026-05-21
 
 First public release.
@@ -19,4 +30,5 @@ First public release.
 - npm package is **scoped** (`@vmandic/searchconsole-mcp`) because unscoped `searchconsole-mcp` is blocked as too similar to [`search-console-mcp`](https://www.npmjs.com/package/search-console-mcp).
 - Distribution is via **npm**, not GitHub Packages (see [docs/RELEASES.md](docs/RELEASES.md)).
 
+[1.0.1]: https://github.com/vmandic/searchconsole-mcp/releases/tag/v1.0.1
 [1.0.0]: https://github.com/vmandic/searchconsole-mcp/releases/tag/v1.0.0

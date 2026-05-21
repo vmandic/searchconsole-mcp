@@ -1,6 +1,6 @@
 {
   "name": "@vmandic/searchconsole-mcp",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Read-only Google Search Console MCP server for Cursor and other MCP clients.",
   "type": "module",
   "bin": {
