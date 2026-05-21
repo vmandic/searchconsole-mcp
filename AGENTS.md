@@ -2,6 +2,10 @@
 
 Read-only **Google Search Console** MCP server for Cursor, Claude, and other MCP clients. This file is for coding agents working in the repo. End-user setup lives in [README.md](README.md).
 
+## Project skills (Cursor)
+
+For **npm publish** and **GitHub release** work, follow [.cursor/skills/ship-release/SKILL.md](.cursor/skills/ship-release/SKILL.md). Index: [.cursor/skills/README.md](.cursor/skills/README.md). Do not publish or tag without explicit user approval and a green `npm test`.
+
 ## What this project is
 
 - **Scope:** GSC only — list properties, search analytics, URL inspection, sitemaps. No writes to Google.
@@ -111,17 +115,18 @@ Add tests next to the behavior (`test/*.test.ts`). Prefer extending existing des
 - Committing or force-pushing without user instruction (see repo owner rules).
 - Exposing HTTP on `0.0.0.0` by default or removing session/body limits.
 
-## Publishing to npm
+## Publishing and releases
 
-Package name: `@vmandic/searchconsole-mcp` (scoped; unscoped `searchconsole-mcp` blocked by npm as too similar to `search-console-mcp`). From a clean tree:
+**Full workflow:** [.cursor/skills/ship-release/SKILL.md](.cursor/skills/ship-release/SKILL.md) (version bump → test → npm → GitHub tag/release). **Reference:** [docs/RELEASES.md](docs/RELEASES.md).
+
+Package name: **`@vmandic/searchconsole-mcp`** only (unscoped `searchconsole-mcp` is blocked by npm). Publish on the user’s machine with passkey auth:
 
 ```bash
-npm login
-npm test
-npm publish          # runs prepublishOnly → build:prod
+npm test && npm run build:prod
+npm publish --auth-type=web
 ```
 
-Verify: `npm view @vmandic/searchconsole-mcp`, `npx -y @vmandic/searchconsole-mcp --help`. Bump `version` in `package.json` for releases. `publishConfig.access` is `public`. Tag `vX.Y.Z` on GitHub and update [CHANGELOG.md](CHANGELOG.md); see [docs/RELEASES.md](docs/RELEASES.md).
+Verify: `npm view @vmandic/searchconsole-mcp version`, `npx -y @vmandic/searchconsole-mcp --version`. Align git tag `vX.Y.Z`, GitHub Release, and [CHANGELOG.md](CHANGELOG.md). **Do not** run `npm publish` or `git push` tags unless the user asked for that release.
 
 ## Docs and registry
 

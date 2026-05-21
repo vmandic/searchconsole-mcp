@@ -16,6 +16,8 @@ GitHub Releases do **not** host the npm tarball. Users install the server from t
 
 ### Maintainer checklist (new version)
 
+Agents: follow [.cursor/skills/ship-release/SKILL.md](../.cursor/skills/ship-release/SKILL.md) (confirmation gates before npm publish and git tag).
+
 1. Bump `version` in `package.json` and update `CHANGELOG.md`.
 2. Run `npm test` and `npm run build:prod`.
 3. Publish: `npm publish --auth-type=web` (scoped public package; `publishConfig.access` is already `public`).
