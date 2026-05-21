@@ -15,11 +15,18 @@ describe('parseCli', () => {
         assert.equal(result.showVersion, true);
     });
 
-    it('defaults to stdio transport and port 3000', () => {
+    it('defaults to stdio transport, loopback host, and port 3000', () => {
         const result = parseCli([]);
         assert.ok(!('error' in result));
         assert.equal(result.transport, 'stdio');
+        assert.equal(result.host, '127.0.0.1');
         assert.equal(result.port, 3000);
+    });
+
+    it('reads host from flags', () => {
+        const result = parseCli(['--host', '0.0.0.0', '--transport', 'http']);
+        assert.ok(!('error' in result));
+        assert.equal(result.host, '0.0.0.0');
     });
 
     it('reads transport and port from flags', () => {

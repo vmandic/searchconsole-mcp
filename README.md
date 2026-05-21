@@ -73,16 +73,26 @@ Tool errors are returned as MCP text with `isError: true` and messages aimed at 
 ## CLI and HTTP mode
 
 ```
-gsc-mcp [--transport stdio|http] [--port 3000] [--version] [--help]
+gsc-mcp [--transport stdio|http] [--host 127.0.0.1] [--port 3000] [--version] [--help]
 ```
 
 | Variable | Purpose |
 |----------|---------|
 | `GSC_MCP_TRANSPORT` | `stdio` (default) or `http` |
+| `GSC_MCP_HOST` | Bind address for `http` (default `127.0.0.1`) |
 | `GSC_MCP_PORT` | Port when `http` (default `3000`) |
 | `GOOGLE_APPLICATION_CREDENTIALS` | Service account key path |
 
-HTTP mode serves MCP at `http://127.0.0.1:<port>/mcp` (streamable HTTP transport).
+HTTP mode serves MCP at `http://<host>:<port>/mcp` (streamable HTTP transport). **Default bind is loopback only.**
+
+### HTTP security
+
+HTTP mode uses your machine’s Google credentials. Anyone who can open a TCP connection to the bind address can call MCP tools as you (read-only GSC).
+
+- Prefer **stdio** (default) for Cursor and local agents.
+- Default **`--host 127.0.0.1`** so the server is not exposed on the LAN.
+- Only use **`--host 0.0.0.0`** on networks you trust, behind a firewall, or with additional protection (VPN, reverse proxy auth).
+- POST bodies are capped at 4 MB; concurrent HTTP sessions are capped at 32 per process.
 
 ## Development
 

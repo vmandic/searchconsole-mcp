@@ -1,9 +1,39 @@
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import { DEFAULT_HTTP_HOST, MAX_HTTP_BODY_BYTES, MAX_HTTP_SESSIONS } from './http-config.js';
+import { readJsonBody } from './http-body.js';
+import { formatErrorForLog } from './errors.js';
+
+export interface HttpListenOptions {
+    host?: string;
+    port: number;
+}
+
+function jsonRpcError(status: number, code: number, message: string): { status: number; body: string } {
+    return {
+        status,
+        body: JSON.stringify({
+            jsonrpc: '2.0',
+            error: { code, message },
+            id: null,
+        }),
+    };
+}
+
+function setSecurityHeaders(res: import('node:http').ServerResponse): void {
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+}
+
+function isPublicBind(host: string): boolean {
+    return host === '0.0.0.0' || host === '::' || host === '[::]';
+}
 
 export async function startHttpTransport(
-    port: number,
+    options: HttpListenOptions,
     createServer: () => McpServer
 ): Promise<void> {
+    const host = options.host ?? DEFAULT_HTTP_HOST;
+    const port = options.port;
+
     const mcpHttp = await import('@modelcontextprotocol/sdk/server/streamableHttp.js');
     const http = await import('node:http');
     const { randomUUID } = await import('node:crypto');
@@ -12,7 +42,8 @@ export async function startHttpTransport(
     const transports: Record<string, InstanceType<typeof mcpHttp.StreamableHTTPServerTransport>> = {};
 
     const httpServer = http.createServer(async (req, res) => {
-        const url = new URL(req.url ?? '/', `http://localhost:${port}`);
+        setSecurityHeaders(res);
+        const url = new URL(req.url ?? '/', `http://${host}:${port}`);
 
         if (url.pathname !== '/mcp') {
             res.writeHead(404, { 'Content-Type': 'application/json' });
@@ -23,22 +54,17 @@ export async function startHttpTransport(
         const sessionId = req.headers['mcp-session-id'] as string | undefined;
 
         if (req.method === 'POST') {
-            let body: unknown;
-            try {
-                const chunks: Buffer[] = [];
-                for await (const chunk of req) chunks.push(chunk as Buffer);
-                body = JSON.parse(Buffer.concat(chunks).toString());
-            } catch {
-                res.writeHead(400, { 'Content-Type': 'application/json' });
-                res.end(
-                    JSON.stringify({
-                        jsonrpc: '2.0',
-                        error: { code: -32700, message: 'Parse error' },
-                        id: null,
-                    })
-                );
+            const parsed = await readJsonBody(req, MAX_HTTP_BODY_BYTES);
+            if (!parsed.ok) {
+                const err =
+                    parsed.status === 413
+                        ? jsonRpcError(413, -32000, parsed.jsonRpcMessage)
+                        : jsonRpcError(400, -32700, parsed.jsonRpcMessage);
+                res.writeHead(err.status, { 'Content-Type': 'application/json' });
+                res.end(err.body);
                 return;
             }
+            const body = parsed.body;
 
             try {
                 let transport: InstanceType<typeof mcpHttp.StreamableHTTPServerTransport>;
@@ -46,6 +72,12 @@ export async function startHttpTransport(
                 if (sessionId && transports[sessionId]) {
                     transport = transports[sessionId];
                 } else if (!sessionId && isInitializeRequest(body)) {
+                    if (Object.keys(transports).length >= MAX_HTTP_SESSIONS) {
+                        const err = jsonRpcError(503, -32000, 'Too many active sessions');
+                        res.writeHead(err.status, { 'Content-Type': 'application/json' });
+                        res.end(err.body);
+                        return;
+                    }
                     transport = new mcpHttp.StreamableHTTPServerTransport({
                         sessionIdGenerator: () => randomUUID(),
                         onsessioninitialized: (sid: string) => {
@@ -59,29 +91,19 @@ export async function startHttpTransport(
                     const server = createServer();
                     await server.connect(transport);
                 } else {
-                    res.writeHead(400, { 'Content-Type': 'application/json' });
-                    res.end(
-                        JSON.stringify({
-                            jsonrpc: '2.0',
-                            error: { code: -32000, message: 'Bad Request: No valid session ID provided' },
-                            id: null,
-                        })
-                    );
+                    const err = jsonRpcError(400, -32000, 'Bad Request: No valid session ID provided');
+                    res.writeHead(err.status, { 'Content-Type': 'application/json' });
+                    res.end(err.body);
                     return;
                 }
 
                 await transport.handleRequest(req, res, body);
             } catch (error) {
-                console.error('[gsc-mcp] Error handling MCP request:', error);
+                console.error('[gsc-mcp] Error handling MCP request:', formatErrorForLog(error));
                 if (!res.headersSent) {
-                    res.writeHead(500, { 'Content-Type': 'application/json' });
-                    res.end(
-                        JSON.stringify({
-                            jsonrpc: '2.0',
-                            error: { code: -32603, message: 'Internal server error' },
-                            id: null,
-                        })
-                    );
+                    const err = jsonRpcError(500, -32603, 'Internal server error');
+                    res.writeHead(err.status, { 'Content-Type': 'application/json' });
+                    res.end(err.body);
                 }
             }
             return;
@@ -101,8 +123,13 @@ export async function startHttpTransport(
         res.end('Method not allowed');
     });
 
-    httpServer.listen(port, () => {
-        console.error(`[gsc-mcp] Streamable HTTP server listening on port ${port}`);
+    httpServer.listen(port, host, () => {
+        console.error(`[gsc-mcp] Streamable HTTP server listening on http://${host}:${port}/mcp`);
+        if (isPublicBind(host)) {
+            console.error(
+                '[gsc-mcp] WARNING: HTTP is bound to all interfaces. Anyone on the network can use your Google credentials via MCP.'
+            );
+        }
     });
 
     const shutdown = async () => {

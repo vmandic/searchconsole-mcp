@@ -47,7 +47,7 @@ async function main() {
     }
 
     if (cli.transport === 'http') {
-        await startHttpTransport(cli.port, createServer);
+        await startHttpTransport({ host: cli.host, port: cli.port }, createServer);
         return;
     }
 

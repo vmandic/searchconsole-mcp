@@ -1,9 +1,11 @@
-import { ADC_SCOPES_HINT } from './config.js';
+import { ADC_SCOPES_GSC_ONLY, ADC_SCOPES_MULTI_MCP } from './config.js';
+import { DEFAULT_HTTP_HOST } from './http-config.js';
 
 export type TransportMode = 'stdio' | 'http';
 
 export interface CliOptions {
     transport: TransportMode;
+    host: string;
     port: number;
     showHelp: boolean;
     showVersion: boolean;
@@ -26,6 +28,7 @@ Usage: gsc-mcp [options]
 Options:
   --transport <type>   Transport: stdio (default) or http
   --port <number>      HTTP port when using --transport http (default: 3000)
+  --host <address>     HTTP bind address (default: 127.0.0.1). Use 0.0.0.0 only on trusted networks.
   --version            Show version and exit
   --help               Show this help and exit
 
@@ -33,9 +36,15 @@ Environment:
   GOOGLE_APPLICATION_CREDENTIALS  Path to service account JSON key
   GSC_MCP_TRANSPORT               Same as --transport
   GSC_MCP_PORT                    Same as --port
+  GSC_MCP_HOST                    Same as --host
 
 Auth (Application Default Credentials):
-  gcloud auth application-default login --scopes=${ADC_SCOPES_HINT}
+  gcloud auth application-default login --scopes=${ADC_SCOPES_GSC_ONLY}
+  (If you also use Analytics MCP: --scopes=${ADC_SCOPES_MULTI_MCP})
+
+HTTP security:
+  HTTP mode exposes your Google credentials to anyone who can reach the bind address.
+  Default bind is loopback (127.0.0.1). Do not use 0.0.0.0 on untrusted networks.
 
 Examples:
   npx gsc-mcp
@@ -49,11 +58,11 @@ export function isCliParseError(result: CliOptions | { error: string }): result 
 
 export function parseCli(argv: string[]): CliOptions | { error: string } {
     if (argv.includes('--help') || argv.includes('-h')) {
-        return { transport: 'stdio', port: 3000, showHelp: true, showVersion: false };
+        return { transport: 'stdio', host: DEFAULT_HTTP_HOST, port: 3000, showHelp: true, showVersion: false };
     }
 
     if (argv.includes('--version') || argv.includes('-v')) {
-        return { transport: 'stdio', port: 3000, showHelp: false, showVersion: true };
+        return { transport: 'stdio', host: DEFAULT_HTTP_HOST, port: 3000, showHelp: false, showVersion: true };
     }
 
     const transportRaw = getArg(argv, '--transport', 'GSC_MCP_TRANSPORT') ?? 'stdio';
@@ -67,8 +76,14 @@ export function parseCli(argv: string[]): CliOptions | { error: string } {
         return { error: `Invalid port: ${portRaw}` };
     }
 
+    const host = getArg(argv, '--host', 'GSC_MCP_HOST') ?? DEFAULT_HTTP_HOST;
+    if (!host || host.includes('/') || host.includes(' ')) {
+        return { error: `Invalid host: ${host}` };
+    }
+
     return {
         transport: transportRaw as TransportMode,
+        host,
         port,
         showHelp: false,
         showVersion: false,
