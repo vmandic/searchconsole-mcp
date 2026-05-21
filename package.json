@@ -1,0 +1,58 @@
+{
+  "name": "gsc-mcp",
+  "version": "1.0.0",
+  "description": "Read-only Google Search Console MCP server for Cursor and other MCP clients.",
+  "type": "module",
+  "bin": {
+    "gsc-mcp": "./dist/server.js"
+  },
+  "files": [
+    "dist/server.js",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "node esbuild.config.mjs",
+    "build:prod": "NODE_ENV=production node esbuild.config.mjs",
+    "typecheck": "tsc --noEmit",
+    "test": "npm run typecheck && tsc --noEmit -p tsconfig.test.json && node --import tsx --test test/*.test.ts",
+    "test:integration": "npm run typecheck && tsc --noEmit -p tsconfig.test.json && GSC_INTEGRATION=1 node --import tsx --test test/integration.test.ts",
+    "prepublishOnly": "npm run build:prod"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "google-search-console",
+    "gsc",
+    "seo",
+    "cursor",
+    "stdio"
+  ],
+  "author": {
+    "name": "Vedran Mandić",
+    "url": "https://github.com/vmandic"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vmandic/gsc-mcp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/vmandic/gsc-mcp/issues"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "@googleapis/searchconsole": "^6.0.1",
+    "@modelcontextprotocol/sdk": "^1.27.1",
+    "google-auth-library": "^10.6.2",
+    "zod": "^3.25.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "esbuild": "^0.25.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0"
+  }
+}
