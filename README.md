@@ -1,6 +1,7 @@
 # Search Console MCP
 
 [![CI](https://github.com/vmandic/searchconsole-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/vmandic/searchconsole-mcp/actions/workflows/ci.yml)
+[![npm version](https://img.shields.io/npm/v/@vmandic/searchconsole-mcp.svg)](https://www.npmjs.com/package/@vmandic/searchconsole-mcp)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Node](https://img.shields.io/badge/node-%3E%3D18-brightgreen)](package.json)
 [![MCP](https://img.shields.io/badge/MCP-Model%20Context%20Protocol-6366f1)](https://modelcontextprotocol.io)
@@ -135,6 +136,8 @@ When finished, summarize: clone path, GCP project ID, config file edited, and th
 
 Use this if you prefer to run commands yourself.
 
+**Fastest path (npm):** install from [@vmandic/searchconsole-mcp](https://www.npmjs.com/package/@vmandic/searchconsole-mcp), complete [Google authentication](#google-authentication), then [connect your MCP client](#connect-your-mcp-client) with `npx` (see [Option A — Install from npm](#option-a--install-from-npm-recommended)).
+
 **1. Install and build** (from source):
 
 ```bash
@@ -197,7 +200,44 @@ Optional: [Google Cloud SDK](https://cloud.google.com/sdk) (`gcloud`) for the in
 
 ## Installation
 
-### Option A — Run from a clone (recommended for development)
+Published on npm as [**`@vmandic/searchconsole-mcp`**](https://www.npmjs.com/package/@vmandic/searchconsole-mcp). The name is scoped because npm rejects unscoped `searchconsole-mcp` as too similar to [`search-console-mcp`](https://www.npmjs.com/package/search-console-mcp) (a different package).
+
+### Option A — Install from npm (recommended)
+
+No clone required. You still need [Google authentication](#google-authentication) on the machine.
+
+**Run once (smoke test):**
+
+```bash
+npx -y @vmandic/searchconsole-mcp --help
+npx -y @vmandic/searchconsole-mcp --version
+```
+
+**Global CLI (optional):**
+
+```bash
+npm install -g @vmandic/searchconsole-mcp
+searchconsole-mcp --help
+```
+
+**MCP client (stdio via `npx`)** — works in Cursor, Claude Code, Copilot, Codex, Claude Desktop. Example for **Cursor** (`~/.cursor/mcp.json`):
+
+```json
+{
+  "mcpServers": {
+    "searchconsole-mcp": {
+      "command": "npx",
+      "args": ["-y", "@vmandic/searchconsole-mcp"]
+    }
+  }
+}
+```
+
+After `npm install -g`, you can use `"command": "searchconsole-mcp"` and `"args": []` instead.
+
+Restart the MCP client, then try *“List my Search Console properties”* (`gsc_list_sites`).
+
+### Option B — Run from a clone (development)
 
 ```bash
 git clone https://github.com/vmandic/searchconsole-mcp.git
@@ -214,24 +254,18 @@ node dist/server.js --help
 node dist/server.js --version
 ```
 
-### Option B — Global CLI after build
+Point your MCP client at `node /absolute/path/to/searchconsole-mcp/dist/server.js` (see [Connect your MCP client](#connect-your-mcp-client)).
+
+### Option C — Global CLI from a local build
+
+From a clone after `npm run build`:
 
 ```bash
 npm link -g
 searchconsole-mcp --help
 ```
 
-Then point your MCP client at `searchconsole-mcp` instead of `node …/dist/server.js`.
-
-### Option C — `npx` (when published to npm)
-
-The package is published under the **`@vmandic`** scope because npm blocks the unscoped name as too similar to [`search-console-mcp`](https://www.npmjs.com/package/search-console-mcp).
-
-```bash
-npx -y @vmandic/searchconsole-mcp
-```
-
-Until the package is on npm, use Option A or B from a local clone.
+Then use `"command": "searchconsole-mcp"` in MCP config instead of `node …/dist/server.js`.
 
 ---
 
@@ -309,9 +343,10 @@ Every client runs the **same local Node.js MCP server** (`searchconsole-mcp`). T
 
 **Before you connect any client**
 
-1. Run `npm run build` so `dist/server.js` exists.
-2. Complete [Google authentication](#google-authentication) (ADC) once on the machine.
-3. Use an **absolute path** to `dist/server.js` in config (or `searchconsole-mcp` after `npm link -g`).
+1. Complete [Google authentication](#google-authentication) (ADC) once on the machine.
+2. Choose how to start the server:
+   - **npm:** [Option A](#option-a--install-from-npm-recommended) — `npx -y @vmandic/searchconsole-mcp` or global `searchconsole-mcp`
+   - **Clone:** run `npm run build` so `dist/server.js` exists, then use an **absolute path** in config (or `npm link -g` / Option C)
 
 **If you use more than one client**, set up **Claude Code first**. You will reuse the same binary and credentials; doing auth and paths once avoids confusion when you add Cursor, Copilot, or Codex.
 
@@ -377,7 +412,20 @@ Edit **`~/.cursor/mcp.json`** (or MCP settings in the project):
 }
 ```
 
-After `npm link -g`:
+**From npm (`npx`, no clone):**
+
+```json
+{
+  "mcpServers": {
+    "searchconsole-mcp": {
+      "command": "npx",
+      "args": ["-y", "@vmandic/searchconsole-mcp"]
+    }
+  }
+}
+```
+
+**After `npm link -g` or `npm install -g @vmandic/searchconsole-mcp`:**
 
 ```json
 "command": "searchconsole-mcp",
