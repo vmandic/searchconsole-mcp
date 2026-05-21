@@ -35,10 +35,10 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/vmandic/gsc-mcp.git"
+    "url": "git+https://github.com/vmandic/searchconsole-mcp.git"
   },
   "bugs": {
-    "url": "https://github.com/vmandic/gsc-mcp/issues"
+    "url": "https://github.com/vmandic/searchconsole-mcp/issues"
   },
   "engines": {
     "node": ">=18"

@@ -139,5 +139,5 @@ Verify: `npm view searchconsole-mcp`, `npx -y searchconsole-mcp --help`. Bump `v
 
 ## Repository
 
-- GitHub: https://github.com/vmandic/gsc-mcp
+- GitHub: https://github.com/vmandic/searchconsole-mcp
 - License: MIT

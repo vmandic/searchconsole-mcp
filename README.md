@@ -1,6 +1,6 @@
 # Search Console MCP
 
-[![CI](https://github.com/vmandic/gsc-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/vmandic/gsc-mcp/actions/workflows/ci.yml)
+[![CI](https://github.com/vmandic/searchconsole-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/vmandic/searchconsole-mcp/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Node](https://img.shields.io/badge/node-%3E%3D18-brightgreen)](package.json)
 [![MCP](https://img.shields.io/badge/MCP-Model%20Context%20Protocol-6366f1)](https://modelcontextprotocol.io)
@@ -87,12 +87,12 @@ Paste the block below into **Cursor, Claude Code, Copilot, or Codex** and ask it
 The agent should ask for: install directory, GCP project ID, and which client you use.
 
 ```
-Set up the searchconsole-mcp MCP server from https://github.com/vmandic/gsc-mcp on this machine end-to-end.
+Set up the searchconsole-mcp MCP server from https://github.com/vmandic/searchconsole-mcp on this machine end-to-end.
 
 Before you change anything, confirm with me:
 1) Which MCP client I use (Cursor, Claude Code, GitHub Copilot in VS Code, OpenAI Codex, or Claude Desktop).
 2) A Google Cloud project ID where we can enable the Search Console API (or use my current gcloud default project).
-3) Where to clone the repo (default: ~/source/vmandic/gsc-mcp or a path I choose).
+3) Where to clone the repo (default: ~/source/vmandic/searchconsole-mcp or a path I choose).
 
 Then do the following, reporting each step:
 
@@ -101,7 +101,7 @@ A) Prerequisites
 - Do not commit or paste any secrets into the repo.
 
 B) Clone, build, test
-- git clone https://github.com/vmandic/gsc-mcp.git into the chosen directory.
+- git clone https://github.com/vmandic/searchconsole-mcp.git into the chosen directory.
 - npm install && npm run build && npm test
 - Confirm dist/server.js exists.
 
@@ -138,8 +138,8 @@ Use this if you prefer to run commands yourself.
 **1. Install and build** (from source):
 
 ```bash
-git clone https://github.com/vmandic/gsc-mcp.git
-cd gsc-mcp
+git clone https://github.com/vmandic/searchconsole-mcp.git
+cd searchconsole-mcp
 npm install
 npm run build
 ```
@@ -168,7 +168,7 @@ Your Google user must have access to the Search Console properties you want. The
   "mcpServers": {
     "searchconsole-mcp": {
       "command": "node",
-      "args": ["/absolute/path/to/gsc-mcp/dist/server.js"],
+      "args": ["/absolute/path/to/searchconsole-mcp/dist/server.js"],
       "env": {}
     }
   }
@@ -200,8 +200,8 @@ Optional: [Google Cloud SDK](https://cloud.google.com/sdk) (`gcloud`) for the in
 ### Option A — Run from a clone (recommended for development)
 
 ```bash
-git clone https://github.com/vmandic/gsc-mcp.git
-cd gsc-mcp
+git clone https://github.com/vmandic/searchconsole-mcp.git
+cd searchconsole-mcp
 npm install
 npm test          # optional: unit tests
 npm run build     # produces dist/server.js
@@ -333,7 +333,7 @@ All examples below use **stdio** (default). Do not pass `--transport http` unles
 
 ```bash
 claude mcp add searchconsole-mcp --transport stdio -- \
-  node /absolute/path/to/gsc-mcp/dist/server.js
+  node /absolute/path/to/searchconsole-mcp/dist/server.js
 ```
 
 Check: `claude mcp list` (or `/mcp` in the Claude Code session).
@@ -347,7 +347,7 @@ Add `.mcp.json` at the project root:
   "mcpServers": {
     "searchconsole-mcp": {
       "command": "node",
-      "args": ["/absolute/path/to/gsc-mcp/dist/server.js"]
+      "args": ["/absolute/path/to/searchconsole-mcp/dist/server.js"]
     }
   }
 }
@@ -368,7 +368,7 @@ Edit **`~/.cursor/mcp.json`** (or MCP settings in the project):
   "mcpServers": {
     "searchconsole-mcp": {
       "command": "node",
-      "args": ["/absolute/path/to/gsc-mcp/dist/server.js"],
+      "args": ["/absolute/path/to/searchconsole-mcp/dist/server.js"],
       "env": {}
     }
   }
@@ -398,7 +398,7 @@ Copilot Chat in VS Code uses a different JSON shape: top-level **`servers`**, no
     "searchconsole-mcp": {
       "type": "stdio",
       "command": "node",
-      "args": ["/absolute/path/to/gsc-mcp/dist/server.js"]
+      "args": ["/absolute/path/to/searchconsole-mcp/dist/server.js"]
     }
   }
 }
@@ -418,7 +418,7 @@ Verify with **MCP: List Servers**. See [VS Code MCP docs](https://code.visualstu
 
 ```bash
 codex mcp add searchconsole-mcp -- \
-  node /absolute/path/to/gsc-mcp/dist/server.js
+  node /absolute/path/to/searchconsole-mcp/dist/server.js
 ```
 
 **Option B — `~/.codex/config.toml`**
@@ -426,7 +426,7 @@ codex mcp add searchconsole-mcp -- \
 ```toml
 [mcp_servers.searchconsole-mcp]
 command = "node"
-args = ["/absolute/path/to/gsc-mcp/dist/server.js"]
+args = ["/absolute/path/to/searchconsole-mcp/dist/server.js"]
 ```
 
 Project-level: `.codex/config.toml` in a trusted project. In the Codex TUI, run `/mcp` to see active servers. Details: [Codex MCP](https://developers.openai.com/codex/mcp).
@@ -442,7 +442,7 @@ Add under `mcpServers` in Claude Desktop’s config file (path depends on OS):
   "mcpServers": {
     "searchconsole-mcp": {
       "command": "node",
-      "args": ["/absolute/path/to/gsc-mcp/dist/server.js"]
+      "args": ["/absolute/path/to/searchconsole-mcp/dist/server.js"]
     }
   }
 }
@@ -457,7 +457,7 @@ Restart Claude Desktop after saving.
 Any client that supports **stdio MCP** can use:
 
 ```bash
-node /absolute/path/to/gsc-mcp/dist/server.js
+node /absolute/path/to/searchconsole-mcp/dist/server.js
 ```
 
 Do not wrap the process in HTTP unless the client requires streamable HTTP and you accept the [security tradeoffs](#security).
@@ -686,7 +686,7 @@ src/
 test/                # Node test runner suites
 ```
 
-Contributions welcome via [issues](https://github.com/vmandic/gsc-mcp/issues) and pull requests.
+Contributions welcome via [issues](https://github.com/vmandic/searchconsole-mcp/issues) and pull requests.
 
 ---
 
