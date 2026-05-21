@@ -121,7 +121,7 @@ npm test
 npm publish          # runs prepublishOnly → build:prod
 ```
 
-Verify: `npm view @vmandic/searchconsole-mcp`, `npx -y @vmandic/searchconsole-mcp --help`. Bump `version` in `package.json` for releases. `publishConfig.access` is `public`.
+Verify: `npm view @vmandic/searchconsole-mcp`, `npx -y @vmandic/searchconsole-mcp --help`. Bump `version` in `package.json` for releases. `publishConfig.access` is `public`. Tag `vX.Y.Z` on GitHub and update [CHANGELOG.md](CHANGELOG.md); see [docs/RELEASES.md](docs/RELEASES.md).
 
 ## Docs and registry
 

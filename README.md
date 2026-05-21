@@ -1,6 +1,7 @@
 # Search Console MCP
 
 [![CI](https://github.com/vmandic/searchconsole-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/vmandic/searchconsole-mcp/actions/workflows/ci.yml)
+[![GitHub release](https://img.shields.io/github/v/release/vmandic/searchconsole-mcp?include_prereleases)](https://github.com/vmandic/searchconsole-mcp/releases/latest)
 [![npm version](https://img.shields.io/npm/v/@vmandic/searchconsole-mcp.svg)](https://www.npmjs.com/package/@vmandic/searchconsole-mcp)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Node](https://img.shields.io/badge/node-%3E%3D18-brightgreen)](package.json)
@@ -34,6 +35,7 @@ Connect Cursor, Claude Desktop, or any MCP client to your GSC properties: search
 - [Configuration](#configuration)
 - [Troubleshooting](#troubleshooting)
 - [Development](#development)
+- [Releases and npm package](#releases-and-npm-package)
 - [License](#license)
 
 ---
@@ -739,6 +741,25 @@ test/                # Node test runner suites
 ```
 
 Contributions welcome via [issues](https://github.com/vmandic/searchconsole-mcp/issues) and pull requests.
+
+---
+
+## Releases and npm package
+
+| What | Where |
+|------|--------|
+| **Version history** | [CHANGELOG.md](CHANGELOG.md) |
+| **GitHub Releases** (tags, notes) | [github.com/vmandic/searchconsole-mcp/releases](https://github.com/vmandic/searchconsole-mcp/releases) |
+| **Latest release** | [releases/latest](https://github.com/vmandic/searchconsole-mcp/releases/latest) |
+| **npm package** (install) | [@vmandic/searchconsole-mcp](https://www.npmjs.com/package/@vmandic/searchconsole-mcp) |
+
+Install the published build:
+
+```bash
+npx -y @vmandic/searchconsole-mcp
+```
+
+**GitHub Packages** ([packages](https://github.com/vmandic/searchconsole-mcp/packages)) is not used for distribution; this project publishes to the public npm registry. See [docs/RELEASES.md](docs/RELEASES.md) for maintainer release steps and version alignment.
 
 ---
 
