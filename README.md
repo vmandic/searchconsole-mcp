@@ -626,18 +626,20 @@ This server can access **your** Search Console data using **your** Google creden
 
 ## Transports: stdio vs HTTP
 
-```
-┌─────────────┐     stdin/stdout (JSON-RPC)     ┌──────────────┐
-│ MCP client  │ ◄──────────────────────────────► │   searchconsole-mcp    │
-│ (Cursor)    │         default: stdio          │   + Google   │
-└─────────────┘                                 │   Search     │
-                                                │   Console API│
-┌─────────────┐     HTTP POST/GET /mcp          └──────────────┘
-│ MCP client  │ ◄──────────────────────────────►      ▲
-│ (optional)  │         --transport http                │
-└─────────────┘                                         │
-                                                        ADC /
-                                                   service account
+```mermaid
+flowchart LR
+  subgraph clients [MCP clients]
+    C["MCP client (Cursor, Claude, …)"]
+    H["MCP client (optional)"]
+  end
+  S["searchconsole-mcp\nNode process"]
+  G["Google Search\nConsole API"]
+  A["ADC / service account"]
+
+  C <-->|"stdio: stdin/stdout JSON-RPC (default)"| S
+  H <-->|"HTTP: POST/GET /mcp (--transport http)"| S
+  S --> G
+  A -.->|credentials| S
 ```
 
 ### Stdio (default, recommended)
