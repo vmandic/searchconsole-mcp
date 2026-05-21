@@ -1,10 +1,10 @@
 {
-  "name": "searchconsole-mcp",
+  "name": "@vmandic/searchconsole-mcp",
   "version": "1.0.0",
   "description": "Read-only Google Search Console MCP server for Cursor and other MCP clients.",
   "type": "module",
   "bin": {
-    "searchconsole-mcp": "./dist/server.js"
+    "searchconsole-mcp": "dist/server.js"
   },
   "files": [
     "dist/server.js",
@@ -39,6 +39,9 @@
   },
   "bugs": {
     "url": "https://github.com/vmandic/searchconsole-mcp/issues"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "engines": {
     "node": ">=18"

@@ -113,7 +113,7 @@ Add tests next to the behavior (`test/*.test.ts`). Prefer extending existing des
 
 ## Publishing to npm
 
-Package name: `searchconsole-mcp`. From a clean tree:
+Package name: `@vmandic/searchconsole-mcp` (scoped; unscoped `searchconsole-mcp` blocked by npm as too similar to `search-console-mcp`). From a clean tree:
 
 ```bash
 npm login
@@ -121,12 +121,12 @@ npm test
 npm publish          # runs prepublishOnly → build:prod
 ```
 
-Verify: `npm view searchconsole-mcp`, `npx -y searchconsole-mcp --help`. Bump `version` in `package.json` for releases. Scoped publish needs `"publishConfig": { "access": "public" }`.
+Verify: `npm view @vmandic/searchconsole-mcp`, `npx -y @vmandic/searchconsole-mcp --help`. Bump `version` in `package.json` for releases. `publishConfig.access` is `public`.
 
 ## Docs and registry
 
 - **README.md** — user install, MCP client config, auth, troubleshooting, tool reference.
-- **smithery.yaml** — stdio via `npx -y searchconsole-mcp`; keep in sync if the npm package name or start command changes.
+- **smithery.yaml** — stdio via `npx -y @vmandic/searchconsole-mcp`; keep in sync if the npm package name or start command changes.
 
 ## Verification checklist (before claiming done)
 

@@ -7,5 +7,5 @@ startCommand:
   commandFunction: |-
     () => ({
       command: 'npx',
-      args: ['-y', 'searchconsole-mcp']
+      args: ['-y', '@vmandic/searchconsole-mcp']
     })

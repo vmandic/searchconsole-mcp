@@ -225,8 +225,10 @@ Then point your MCP client at `searchconsole-mcp` instead of `node …/dist/serv
 
 ### Option C — `npx` (when published to npm)
 
+The package is published under the **`@vmandic`** scope because npm blocks the unscoped name as too similar to [`search-console-mcp`](https://www.npmjs.com/package/search-console-mcp).
+
 ```bash
-npx -y searchconsole-mcp
+npx -y @vmandic/searchconsole-mcp
 ```
 
 Until the package is on npm, use Option A or B from a local clone.
@@ -631,7 +633,7 @@ searchconsole-mcp [--transport stdio|http] [--host <addr>] [--port <n>] [--versi
 
 ### Smithery
 
-[Smithery](https://smithery.ai/) is a registry for discovering and installing MCP servers in compatible clients. [smithery.yaml](smithery.yaml) tells Smithery to run this server over stdio via `npx searchconsole-mcp`.
+[Smithery](https://smithery.ai/) is a registry for discovering and installing MCP servers in compatible clients. [smithery.yaml](smithery.yaml) tells Smithery to run this server over stdio via `npx -y @vmandic/searchconsole-mcp`.
 
 ---
 

@@ -47,7 +47,7 @@ HTTP security:
   Default bind is loopback (127.0.0.1). Do not use 0.0.0.0 on untrusted networks.
 
 Examples:
-  npx searchconsole-mcp
+  npx -y @vmandic/searchconsole-mcp
   node dist/server.js --transport http --port 3000
 `);
 }
