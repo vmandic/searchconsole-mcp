@@ -148,10 +148,14 @@ npm run build
 
 ```bash
 gcloud services enable searchconsole.googleapis.com --project=YOUR_PROJECT_ID
+```
 
+```bash
 gcloud auth application-default login \
   --scopes=https://www.googleapis.com/auth/webmasters.readonly
+```
 
+```bash
 gcloud auth application-default set-quota-project YOUR_PROJECT_ID
 ```
 
