@@ -4,8 +4,11 @@ export const SERVER_NAME = 'gsc-mcp';
 
 export const GSC_READONLY_SCOPE = 'https://www.googleapis.com/auth/webmasters.readonly';
 
-/** Suggested scopes for `gcloud auth application-default login` when using multiple Google MCP servers. */
-export const ADC_SCOPES_HINT =
+/** Minimum scope for this server only. */
+export const ADC_SCOPES_GSC_ONLY = GSC_READONLY_SCOPE;
+
+/** Optional extra scopes when sharing ADC with Analytics MCP on the same machine. */
+export const ADC_SCOPES_MULTI_MCP =
     'https://www.googleapis.com/auth/analytics.readonly,https://www.googleapis.com/auth/cloud-platform,' +
     GSC_READONLY_SCOPE;
 

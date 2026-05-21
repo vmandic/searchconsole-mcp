@@ -5,6 +5,7 @@ import { installStdioGuard } from './stdio-guard.js';
 import { parseCli, printHelp, isCliParseError } from './cli.js';
 import { SERVER_NAME, SERVER_VERSION, GSC_READONLY_SCOPE } from './config.js';
 import { startHttpTransport } from './http-transport.js';
+import { formatErrorForLog } from './errors.js';
 
 const { writeStdout, writeStderr } = installStdioGuard();
 const argv = process.argv.slice(2);
@@ -66,14 +67,14 @@ async function main() {
 }
 
 process.on('uncaughtException', (err) => {
-    console.error('[gsc-mcp] Uncaught exception:', err);
+    console.error('[gsc-mcp] Uncaught exception:', formatErrorForLog(err));
 });
 
 process.on('unhandledRejection', (reason) => {
-    console.error('[gsc-mcp] Unhandled rejection:', reason);
+    console.error('[gsc-mcp] Unhandled rejection:', formatErrorForLog(reason));
 });
 
 main().catch((err) => {
-    console.error('[gsc-mcp] Fatal error:', err);
+    console.error('[gsc-mcp] Fatal error:', formatErrorForLog(err));
     process.exit(1);
 });

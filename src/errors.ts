@@ -1,4 +1,4 @@
-import { ADC_SCOPES_HINT } from './config.js';
+import { ADC_SCOPES_GSC_ONLY } from './config.js';
 
 type ApiErrorLike = Error & {
     code?: string | number;
@@ -28,7 +28,7 @@ export function sanitizeToolError(err: unknown): string {
         msg.includes('Could not load the default credentials') ||
         msg.includes('insufficient authentication scopes')
     ) {
-        return `Authentication failed. Run: gcloud auth application-default login --scopes=${ADC_SCOPES_HINT}`;
+        return `Authentication failed. Run: gcloud auth application-default login --scopes=${ADC_SCOPES_GSC_ONLY}`;
     }
     if (status === 'PERMISSION_DENIED' || msg.includes('PERMISSION_DENIED') || msg.includes('Forbidden')) {
         return 'Permission denied. Ensure your Google account has access to this Search Console property.';
@@ -48,4 +48,9 @@ export function sanitizeToolError(err: unknown): string {
         .replace(/\/Users\/[^\s/]+/g, '/Users/***')
         .replace(/at\s+.+\(.+:\d+:\d+\)/g, '')
         .trim() || 'An unexpected error occurred.';
+}
+
+/** Redacted one-line message safe for stderr logs. */
+export function formatErrorForLog(err: unknown): string {
+    return sanitizeToolError(err);
 }
