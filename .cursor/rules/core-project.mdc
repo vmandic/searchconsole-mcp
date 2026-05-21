@@ -1,0 +1,41 @@
+---
+description: Use when working in searchconsole-mcp and need project identity, commands, or where detailed conventions live.
+alwaysApply: true
+---
+
+# searchconsole-mcp — core context
+
+Read-only **Google Search Console** MCP server. User docs: [README.md](../../README.md). Agents: topic rules under `.cursor/rules/` (apply by file path).
+
+## Identity
+
+- npm: `@vmandic/searchconsole-mcp` — CLI `searchconsole-mcp`
+- Repo: https://github.com/vmandic/searchconsole-mcp
+- Five tools: `gsc_*` + `gsc_mcp_server_ping`; scope `webmasters.readonly` only
+- Stdio default; optional HTTP (loopback-first)
+
+## Commands (repo root)
+
+```bash
+npm ci && npm test && npm run build:prod
+node dist/server.js --help
+```
+
+## Where rules live
+
+| Rule | Globs | Topic |
+|------|-------|--------|
+| [code-style](code-style.mdc) | `src/**`, `test/**` | TS, Zod, stdio, tools |
+| [architecture](architecture.mdc) | `src/**` | Layout, tools, esbuild |
+| [running-tests](running-tests.mdc) | `src/**`, `test/**`, `package.json` | `npm test`, mocks |
+| [security-checking](security-checking.mdc) | `src/**`, `package.json`, security report | Auth, HTTP, secrets |
+| [git-commit](git-commit.mdc) | `**/*` | Commit/push gates |
+
+## Skills
+
+- **Release / npm / GitHub:** [.cursor/skills/ship-release/SKILL.md](../skills/ship-release/SKILL.md)
+
+## Before claiming done
+
+- [ ] `npm test` (if code changed)
+- [ ] Topic rules above respected for files you touched

@@ -1,0 +1,38 @@
+---
+description: Use when editing TypeScript under src/ or test/ in searchconsole-mcp (imports, Zod, stdio, tool handlers).
+globs:
+  - src/**/*.ts
+  - test/**/*.ts
+alwaysApply: false
+---
+
+# Code style
+
+## Imports
+
+- ESM only. Relative imports use **`.js` suffix** (`from '../errors.js'`).
+- Named exports preferred.
+
+## Validation
+
+- Schemas only in **`src/tools/schemas.ts`**. Handlers use **`safeTool`** + `safeParse`.
+- Update **`test/schemas.test.ts`** (or related) when bounds change.
+
+## MCP stdio
+
+- **`installStdioGuard()`** at startup. No `console.log` on stdout path.
+- Operator logs: **`console.error`** with `[searchconsole-mcp]` prefix.
+- Tool text: **`sanitizeToolError`**; success via **`jsonResult`**.
+
+## Tests
+
+- **`node:test`** + **`node:assert/strict`**. Mock GSC via **`setGscClientForTests`**.
+
+## Red flags
+
+| Stop | Why |
+|------|-----|
+| `./foo` without `.js` | ESM break |
+| Zod inline in `gsc*.ts` | Drift from MCP args |
+| `console.log` in server/tools | Breaks JSON-RPC |
+| Live GSC in `npm test` | CI flake |

@@ -1,0 +1,36 @@
+---
+description: Use when changing HTTP transport, OAuth scopes, dependencies, or error handling in searchconsole-mcp.
+globs:
+  - src/**/*
+  - package.json
+  - package-lock.json
+  - security_best_practices_report.md
+alwaysApply: false
+---
+
+# Security checking
+
+Read **`security_best_practices_report.md`** before HTTP, auth, or validation-limit edits.
+
+## OAuth
+
+- Only **`GSC_READONLY_SCOPE`** in `src/config.ts`. No extra scopes without README + report update.
+
+## HTTP
+
+- Default **`127.0.0.1`**. No default **`0.0.0.0`**.
+- No MCP-layer auth on HTTP — bind address matters.
+- Keep **`MAX_HTTP_BODY_BYTES`** (4 MB) and **`MAX_HTTP_SESSIONS`** (32).
+
+## Errors and secrets
+
+- Users see **`sanitizeToolError`** only. Logs use **`formatErrorForLog`**.
+- Never commit credentials, service account JSON, or secret `.env`.
+
+## Dependencies
+
+- After lockfile changes: **`npm audit --audit-level=high`**.
+
+## Ask first
+
+- Loosening HTTP caps, widening scopes, or exposing HTTP without extra controls.

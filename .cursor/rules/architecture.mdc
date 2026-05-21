@@ -1,0 +1,41 @@
+---
+description: Use when adding MCP tools, transports, or Google client wiring under src/ in searchconsole-mcp.
+globs:
+  - src/**/*
+alwaysApply: false
+---
+
+# Architecture
+
+## Module map
+
+| File | Role |
+|------|------|
+| `server.ts` | Entry, guard, CLI, transport, `registerGscTools` |
+| `tools/index.ts` | All MCP tool registration |
+| `tools/schemas.ts` | Zod params |
+| `tools/gsc*.ts` | Thin GSC API wrappers |
+| `clients.ts` | `getGscClient` + test overrides |
+| `errors.ts` | `sanitizeToolError`, `formatErrorForLog` |
+| `http-*.ts` | Optional HTTP; caps in `http-config.ts` |
+
+## New tool checklist
+
+1. Schema in **`schemas.ts`**
+2. Wrapper in **`tools/gsc*.ts`** via **`getGscClient`**
+3. Register in **`tools/index.ts`**
+4. Mocked unit test; integration only with `GSC_INTEGRATION=1`
+
+## Build
+
+- **esbuild** → single **`dist/server.js`**; **`dependencies` external** (not bundled).
+- Dynamic `import()` for MCP SDK and tools in `server.ts`.
+
+## Red flags
+
+| Stop | Why |
+|------|-----|
+| GSC calls in `server.ts` | Breaks mock boundary |
+| Bundle dependencies | Conflicts with publish model |
+| Tools outside `index.ts` | Discovery drift |
+| New Google APIs / write scopes | Out of product scope |

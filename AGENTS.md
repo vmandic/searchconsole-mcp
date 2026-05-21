@@ -1,148 +1,40 @@
 # Agent guide — searchconsole-mcp
 
-Read-only **Google Search Console** MCP server for Cursor, Claude, and other MCP clients. This file is for coding agents working in the repo. End-user setup lives in [README.md](README.md).
+Coding agents: start with **Cursor rules** (below). End users: [README.md](README.md).
 
-## Project skills (Cursor)
+## Cursor rules (primary)
 
-For **npm publish** and **GitHub release** work, follow [.cursor/skills/ship-release/SKILL.md](.cursor/skills/ship-release/SKILL.md). Index: [.cursor/skills/README.md](.cursor/skills/README.md). Do not publish or tag without explicit user approval and a green `npm test`.
+Conventions are split by topic in [`.cursor/rules/`](.cursor/rules/README.md):
 
-## What this project is
+- **`core-project.mdc`** — always on: identity, commands, rule index
+- **`code-style.mdc`** — `src/`, `test/`: ESM, Zod, stdio, tool handlers
+- **`architecture.mdc`** — `src/`: layout, tools, esbuild boundaries
+- **`running-tests.mdc`** — tests and `package.json`: `npm test`, mocks, integration flag
+- **`security-checking.mdc`** — auth, HTTP, deps, `security_best_practices_report.md`
+- **`git-commit.mdc`** — commit/push/npm publish gates
 
-- **Scope:** GSC only — list properties, search analytics, URL inspection, sitemaps. No writes to Google.
-- **OAuth:** Single scope `https://www.googleapis.com/auth/webmasters.readonly` (`GSC_READONLY_SCOPE` in `src/config.ts`). Do not add write or admin scopes without an explicit product decision and README/security updates.
-- **Surface:** Five MCP tools (`gsc_mcp_server_ping`, `gsc_list_sites`, `gsc_search_analytics`, `gsc_inspect_url`, `gsc_list_sitemaps`). Prefer extending existing tools over adding unrelated Google APIs (GA4, Indexing API, etc.).
-- **Transports:** **stdio** (default, for local MCP clients) and optional **HTTP** (loopback-first, bounded bodies/sessions).
+Do not duplicate rule content here; update the relevant `.mdc` when conventions change.
 
-## Tech stack
+## Cursor skills
 
-| Piece | Choice |
-|-------|--------|
-| Runtime | Node.js **≥ 18** (CI: 18, 20, 22) |
-| Language | TypeScript (ESM, `.js` import suffixes in `src/`) |
-| MCP | `@modelcontextprotocol/sdk` |
-| Google | `@googleapis/searchconsole`, `google-auth-library` (ADC) |
-| Validation | Zod (`src/tools/schemas.ts`) |
-| Bundle | esbuild → single `dist/server.js` (`esbuild.config.mjs`); runtime deps **not** bundled |
+| Skill | When |
+|-------|------|
+| [ship-release](.cursor/skills/ship-release/SKILL.md) | Version bump, `npm publish`, GitHub tag/release |
 
-## Commands
+Index: [.cursor/skills/README.md](.cursor/skills/README.md). Reference: [docs/RELEASES.md](docs/RELEASES.md).
 
-Run from repo root:
+## Quick reference
 
-```bash
-npm ci
-npm test                 # typecheck + unit tests (mocked GSC)
-npm run build            # dev bundle + sourcemap
-npm run build:prod       # minified bundle (npm publish / release)
-npm run typecheck
-npm run test:integration # live API — needs ADC + GSC_INTEGRATION=1 + GSC_SITE_URL
-```
+| Item | Value |
+|------|--------|
+| npm | `@vmandic/searchconsole-mcp` |
+| GitHub | https://github.com/vmandic/searchconsole-mcp |
+| Test | `npm test` (required before claiming code done) |
+| Build | `npm run build:prod` |
+| License | MIT |
 
-After build:
+## Ask before doing
 
-```bash
-node dist/server.js --help
-node dist/server.js --version
-```
-
-`prepublishOnly` runs `build:prod`. Published tarball includes only `dist/server.js`, `README.md`, `LICENSE` (`package.json` → `files`).
-
-## Project layout
-
-```
-src/
-  server.ts           # Entry: stdio guard, CLI, transport, dynamic SDK imports
-  cli.ts              # Args, help, version
-  config.ts           # Server name, OAuth scopes, version
-  stdio-guard.ts      # MCP-safe stdout (JSON-RPC only on stdout)
-  errors.ts           # sanitizeToolError (user-facing), formatErrorForLog (stderr)
-  clients.ts          # Lazy Search Console client + test overrides
-  http-config.ts      # DEFAULT_HTTP_HOST, session/body limits
-  http-body.ts        # Bounded JSON POST reader
-  http-transport.ts   # Optional streamable HTTP MCP
-  tools/
-    index.ts          # registerGscTools — tool registration + safeTool wrapper
-    schemas.ts        # Zod schemas (shared by tools and tests)
-    gsc*.ts           # Thin API wrappers per resource
-test/                 # node:test — mirror src concerns
-```
-
-## Conventions for changes
-
-### MCP / stdio
-
-- **Never** log to `stdout` in stdio mode except JSON-RPC. Use `console.error` / stderr, or the stdio guard (`installStdioGuard`). Breaking this breaks Cursor and Claude Desktop.
-- Tool handlers return MCP text content; failures use `isError: true` and messages from `sanitizeToolError` (no raw stack traces or home paths to users).
-- Register tools in `src/tools/index.ts`. Put Zod shapes in `src/tools/schemas.ts` and reuse `.shape` fields in `server.tool(...)` definitions.
-
-### API wrappers
-
-- Keep Google calls in `src/tools/gsc*.ts` via `getGscClient(auth)` from `src/clients.ts`.
-- Unit tests mock the client with `setGscClientForTests` / `resetGscClientForTests`; do not call Google in default `npm test`.
-
-### HTTP mode
-
-- Default bind: `127.0.0.1` (`src/http-config.ts`). Treat `0.0.0.0` as dangerous; document warnings in CLI/README if touched.
-- Respect existing limits: body size (`http-body.ts`), max sessions (`http-transport.ts`). Do not remove caps without security review.
-- HTTP has **no MCP-layer auth**; residual risk is documented in `security_best_practices_report.md`.
-
-### Errors and logging
-
-- User-facing: `sanitizeToolError` in `src/errors.ts` — map auth, permission, not found, quota, invalid argument; redact paths.
-- Operator logs: `formatErrorForLog` — use in `server.ts` / `http-transport.ts`, not raw `err.message` with secrets.
-
-## Testing
-
-| Suite | When | How |
-|-------|------|-----|
-| Unit | Always before PR | `npm test` — schemas, CLI, HTTP config/body, mocked GSC wrappers, tool registration |
-| Integration | Local only, optional | `GSC_INTEGRATION=1` + ADC + `GSC_SITE_URL` → `npm run test:integration` |
-| CI | Every push/PR to `main` | `.github/workflows/ci.yml` — no integration job |
-
-Add tests next to the behavior (`test/*.test.ts`). Prefer extending existing describe blocks and mocks over new integration dependencies.
-
-## Security and dependencies
-
-- Read `security_best_practices_report.md` before changing HTTP transport, auth scopes, or validation bounds.
-- Run `npm audit --audit-level=high` when changing dependencies; CI enforces this.
-- Do not commit secrets, service account JSON, or `.env` with credentials.
-- `npm publish` ships only the built CLI; users authenticate via **Application Default Credentials** on their machine.
-
-## Boundaries (ask before doing)
-
-- Adding MCP tools beyond the five GSC-focused tools or scopes beyond read-only GSC.
-- Bundling dependencies into `dist/server.js` (current design: external `dependencies` at install time).
-- Broad refactors, mass renames, or dependency major upgrades without explicit request.
-- Committing or force-pushing without user instruction (see repo owner rules).
-- Exposing HTTP on `0.0.0.0` by default or removing session/body limits.
-
-## Publishing and releases
-
-**Full workflow:** [.cursor/skills/ship-release/SKILL.md](.cursor/skills/ship-release/SKILL.md) (version bump → test → npm → GitHub tag/release). **Reference:** [docs/RELEASES.md](docs/RELEASES.md).
-
-Package name: **`@vmandic/searchconsole-mcp`** only (unscoped `searchconsole-mcp` is blocked by npm). Publish on the user’s machine with passkey auth:
-
-```bash
-npm test && npm run build:prod
-npm publish --auth-type=web
-```
-
-Verify: `npm view @vmandic/searchconsole-mcp version`, `npx -y @vmandic/searchconsole-mcp --version`. Align git tag `vX.Y.Z`, GitHub Release, and [CHANGELOG.md](CHANGELOG.md). **Do not** run `npm publish` or `git push` tags unless the user asked for that release.
-
-## Docs and registry
-
-- **README.md** — user install, MCP client config, auth, troubleshooting, tool reference.
-- **smithery.yaml** — stdio via `npx -y @vmandic/searchconsole-mcp`; keep in sync if the npm package name or start command changes.
-
-## Verification checklist (before claiming done)
-
-- [ ] `npm test` passes
-- [ ] `npm run build:prod` produces `dist/server.js` with shebang
-- [ ] `node dist/server.js --help` and `--version` work
-- [ ] New tool args validated in `schemas.ts` with tests
-- [ ] No stdout pollution in stdio path; error messages still sanitized
-- [ ] README/AGENTS.md updated if behavior, tools, auth, or HTTP security changed
-
-## Repository
-
-- GitHub: https://github.com/vmandic/searchconsole-mcp
-- License: MIT
+- New MCP tools or OAuth scopes beyond read-only GSC
+- HTTP default bind or body/session limit changes
+- `npm publish`, git tags, force push, or broad refactors without explicit request

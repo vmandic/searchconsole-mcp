@@ -6,4 +6,4 @@ Cursor loads skills from `.cursor/skills/` for agents working in this repository
 |-------|----------|
 | [ship-release](ship-release/SKILL.md) | Bumping version, `npm publish`, GitHub tag/release |
 
-See [AGENTS.md](../../AGENTS.md) for day-to-day coding conventions.
+Day-to-day conventions: [`.cursor/rules/`](../rules/README.md). Index: [AGENTS.md](../../AGENTS.md).

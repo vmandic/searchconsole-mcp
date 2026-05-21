@@ -1,0 +1,52 @@
+---
+description: Use when adding or changing tests, editing src/ or test/, or verifying changes before PR or release.
+globs:
+  - test/**/*.ts
+  - src/**/*.ts
+  - package.json
+alwaysApply: false
+---
+
+# Running tests (searchconsole-mcp)
+
+## Default: unit tests (always)
+
+From repo root:
+
+```bash
+npm test
+```
+
+Runs TypeScript checks and **node:test** suites in `test/*.test.ts`. Default tests use a **mocked GSC client** — no live Google calls.
+
+## Mocking GSC
+
+- Inject mocks with `setGscClientForTests` / `resetGscClientForTests` from `src/clients.ts`.
+- Call `resetGscClientForTests()` in `beforeEach` when tests override the client.
+- See `test/gsc-tools.test.ts` and `test/clients.test.ts` for patterns.
+- Do **not** hit the Search Console API in default `npm test`.
+
+## Integration tests (optional, local only)
+
+Only when the user wants live API verification and ADC is configured:
+
+```bash
+GSC_INTEGRATION=1 GSC_SITE_URL='https://example.com/' npm run test:integration
+```
+
+CI (`.github/workflows/ci.yml`) runs **`npm test` only** — never require integration for merge.
+
+## When to run
+
+| Change | Command |
+|--------|---------|
+| `src/`, `test/`, schemas, tools | `npm test` |
+| Release / publish prep | `npm test` then `npm run build:prod` |
+| Live GSC behavior (user request) | `npm run test:integration` |
+
+## Adding tests
+
+- Add `test/*.test.ts` mirroring the behavior under test.
+- Extend existing `describe` blocks and mocks before adding integration coverage.
+- Do not add new test frameworks; use built-in **node:test** and **assert/strict**.
+- Report pass/fail with evidence. Do not claim tests passed if you did not run them.
