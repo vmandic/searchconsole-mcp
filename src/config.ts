@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 
-export const SERVER_NAME = 'gsc-mcp';
+export const SERVER_NAME = 'searchconsole-mcp';
 
 export const GSC_READONLY_SCOPE = 'https://www.googleapis.com/auth/webmasters.readonly';
 

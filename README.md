@@ -75,7 +75,7 @@ Paste the block below into **Cursor, Claude Code, Copilot, or Codex** and ask it
 
 | Assumption | Why it matters |
 |------------|----------------|
-| **Node.js 18+** | Required to build and run `gsc-mcp` |
+| **Node.js 18+** | Required to build and run `searchconsole-mcp` |
 | **`gcloud` CLI** | Used for API enablement and [Application Default Credentials](https://cloud.google.com/docs/authentication/application-default-credentials) (ADC) |
 | **Google Cloud project** | Search Console API must be enabled on a GCP project ([not the same as a GSC property](#google-cloud-project-required)) |
 | **Google account** | Must already have access to the Search Console properties you care about |
@@ -87,7 +87,7 @@ Paste the block below into **Cursor, Claude Code, Copilot, or Codex** and ask it
 The agent should ask for: install directory, GCP project ID, and which client you use.
 
 ```
-Set up the gsc-mcp MCP server from https://github.com/vmandic/gsc-mcp on this machine end-to-end.
+Set up the searchconsole-mcp MCP server from https://github.com/vmandic/gsc-mcp on this machine end-to-end.
 
 Before you change anything, confirm with me:
 1) Which MCP client I use (Cursor, Claude Code, GitHub Copilot in VS Code, OpenAI Codex, or Claude Desktop).
@@ -113,12 +113,12 @@ C) Google Cloud + auth (user ADC)
 - Remind me: I need Search Console property access on my Google account; the GCP project only enables the API.
 
 D) MCP client config (stdio only — no --transport http)
-- Add gsc-mcp using command "node" and args ["ABSOLUTE_PATH/dist/server.js"], or command "gsc-mcp" if we npm link -g.
+- Add searchconsole-mcp using command "node" and args ["ABSOLUTE_PATH/dist/server.js"], or command "searchconsole-mcp" if we npm link -g.
 - Use the correct config file for my client (see the repo README "Connect your MCP client"):
-  - Claude Code: prefer `claude mcp add gsc-mcp --transport stdio -- node ABSOLUTE_PATH/dist/server.js` first if I use multiple clients.
+  - Claude Code: prefer `claude mcp add searchconsole-mcp --transport stdio -- node ABSOLUTE_PATH/dist/server.js` first if I use multiple clients.
   - Cursor: ~/.cursor/mcp.json → mcpServers
   - VS Code Copilot: .vscode/mcp.json or user MCP config → servers, type stdio
-  - Codex: ~/.codex/config.toml → [mcp_servers.gsc-mcp] or `codex mcp add`
+  - Codex: ~/.codex/config.toml → [mcp_servers.searchconsole-mcp] or `codex mcp add`
 - Use absolute paths only.
 
 E) Verify
@@ -166,7 +166,7 @@ Your Google user must have access to the Search Console properties you want. The
 ```json
 {
   "mcpServers": {
-    "gsc-mcp": {
+    "searchconsole-mcp": {
       "command": "node",
       "args": ["/absolute/path/to/gsc-mcp/dist/server.js"],
       "env": {}
@@ -218,15 +218,15 @@ node dist/server.js --version
 
 ```bash
 npm link -g
-gsc-mcp --help
+searchconsole-mcp --help
 ```
 
-Then point your MCP client at `gsc-mcp` instead of `node …/dist/server.js`.
+Then point your MCP client at `searchconsole-mcp` instead of `node …/dist/server.js`.
 
 ### Option C — `npx` (when published to npm)
 
 ```bash
-npx -y gsc-mcp
+npx -y searchconsole-mcp
 ```
 
 Until the package is on npm, use Option A or B from a local clone.
@@ -303,13 +303,13 @@ This server only needs `webmasters.readonly`; extra scopes are optional for your
 
 ## Connect your MCP client
 
-Every client runs the **same local Node.js MCP server** (`gsc-mcp`). That process talks to **Google Search Console** on your behalf. The client (Cursor, Claude Code, Copilot, Codex) only spawns the server and passes tool calls over stdio.
+Every client runs the **same local Node.js MCP server** (`searchconsole-mcp`). That process talks to **Google Search Console** on your behalf. The client (Cursor, Claude Code, Copilot, Codex) only spawns the server and passes tool calls over stdio.
 
 **Before you connect any client**
 
 1. Run `npm run build` so `dist/server.js` exists.
 2. Complete [Google authentication](#google-authentication) (ADC) once on the machine.
-3. Use an **absolute path** to `dist/server.js` in config (or `gsc-mcp` after `npm link -g`).
+3. Use an **absolute path** to `dist/server.js` in config (or `searchconsole-mcp` after `npm link -g`).
 
 **If you use more than one client**, set up **Claude Code first**. You will reuse the same binary and credentials; doing auth and paths once avoids confusion when you add Cursor, Copilot, or Codex.
 
@@ -327,12 +327,12 @@ All examples below use **stdio** (default). Do not pass `--transport http` unles
 
 ### 1. Claude Code (set up first)
 
-[Claude Code](https://code.claude.com/) is Anthropic’s terminal coding agent. Configure gsc-mcp here first if you plan to use multiple tools on one machine.
+[Claude Code](https://code.claude.com/) is Anthropic’s terminal coding agent. Configure searchconsole-mcp here first if you plan to use multiple tools on one machine.
 
 **Option A — CLI (quick)**
 
 ```bash
-claude mcp add gsc-mcp --transport stdio -- \
+claude mcp add searchconsole-mcp --transport stdio -- \
   node /absolute/path/to/gsc-mcp/dist/server.js
 ```
 
@@ -345,7 +345,7 @@ Add `.mcp.json` at the project root:
 ```json
 {
   "mcpServers": {
-    "gsc-mcp": {
+    "searchconsole-mcp": {
       "command": "node",
       "args": ["/absolute/path/to/gsc-mcp/dist/server.js"]
     }
@@ -366,7 +366,7 @@ Edit **`~/.cursor/mcp.json`** (or MCP settings in the project):
 ```json
 {
   "mcpServers": {
-    "gsc-mcp": {
+    "searchconsole-mcp": {
       "command": "node",
       "args": ["/absolute/path/to/gsc-mcp/dist/server.js"],
       "env": {}
@@ -378,11 +378,11 @@ Edit **`~/.cursor/mcp.json`** (or MCP settings in the project):
 After `npm link -g`:
 
 ```json
-"command": "gsc-mcp",
+"command": "searchconsole-mcp",
 "args": []
 ```
 
-Restart Cursor, then open **Settings → MCP** and confirm `gsc-mcp` is connected. The tools listed are served by the **local Node server**, not by Google directly.
+Restart Cursor, then open **Settings → MCP** and confirm `searchconsole-mcp` is connected. The tools listed are served by the **local Node server**, not by Google directly.
 
 ---
 
@@ -395,7 +395,7 @@ Copilot Chat in VS Code uses a different JSON shape: top-level **`servers`**, no
 ```json
 {
   "servers": {
-    "gsc-mcp": {
+    "searchconsole-mcp": {
       "type": "stdio",
       "command": "node",
       "args": ["/absolute/path/to/gsc-mcp/dist/server.js"]
@@ -417,14 +417,14 @@ Verify with **MCP: List Servers**. See [VS Code MCP docs](https://code.visualstu
 **Option A — CLI**
 
 ```bash
-codex mcp add gsc-mcp -- \
+codex mcp add searchconsole-mcp -- \
   node /absolute/path/to/gsc-mcp/dist/server.js
 ```
 
 **Option B — `~/.codex/config.toml`**
 
 ```toml
-[mcp_servers.gsc-mcp]
+[mcp_servers.searchconsole-mcp]
 command = "node"
 args = ["/absolute/path/to/gsc-mcp/dist/server.js"]
 ```
@@ -440,7 +440,7 @@ Add under `mcpServers` in Claude Desktop’s config file (path depends on OS):
 ```json
 {
   "mcpServers": {
-    "gsc-mcp": {
+    "searchconsole-mcp": {
       "command": "node",
       "args": ["/absolute/path/to/gsc-mcp/dist/server.js"]
     }
@@ -578,7 +578,7 @@ This server can access **your** Search Console data using **your** Google creden
 
 ```
 ┌─────────────┐     stdin/stdout (JSON-RPC)     ┌──────────────┐
-│ MCP client  │ ◄──────────────────────────────► │   gsc-mcp    │
+│ MCP client  │ ◄──────────────────────────────► │   searchconsole-mcp    │
 │ (Cursor)    │         default: stdio          │   + Google   │
 └─────────────┘                                 │   Search     │
                                                 │   Console API│
@@ -595,7 +595,7 @@ This server can access **your** Search Console data using **your** Google creden
 ```bash
 node dist/server.js
 # or
-gsc-mcp
+searchconsole-mcp
 ```
 
 - Best for Cursor, Claude Desktop, and local agents
@@ -619,7 +619,7 @@ Use HTTP only when your client requires it and you understand the [security](#se
 ### CLI
 
 ```
-gsc-mcp [--transport stdio|http] [--host <addr>] [--port <n>] [--version] [--help]
+searchconsole-mcp [--transport stdio|http] [--host <addr>] [--port <n>] [--version] [--help]
 ```
 
 | Flag / variable | Default | Description |
@@ -631,7 +631,7 @@ gsc-mcp [--transport stdio|http] [--host <addr>] [--port <n>] [--version] [--hel
 
 ### Smithery
 
-[Smithery](https://smithery.ai/) is a registry for discovering and installing MCP servers in compatible clients. [smithery.yaml](smithery.yaml) tells Smithery to run this server over stdio via `npx gsc-mcp`.
+[Smithery](https://smithery.ai/) is a registry for discovering and installing MCP servers in compatible clients. [smithery.yaml](smithery.yaml) tells Smithery to run this server over stdio via `npx searchconsole-mcp`.
 
 ---
 

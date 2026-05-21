@@ -1,4 +1,4 @@
-# Agent guide — gsc-mcp
+# Agent guide — searchconsole-mcp
 
 Read-only **Google Search Console** MCP server for Cursor, Claude, and other MCP clients. This file is for coding agents working in the repo. End-user setup lives in [README.md](README.md).
 
@@ -113,7 +113,7 @@ Add tests next to the behavior (`test/*.test.ts`). Prefer extending existing des
 
 ## Publishing to npm
 
-Package name: `gsc-mcp`. From a clean tree:
+Package name: `searchconsole-mcp`. From a clean tree:
 
 ```bash
 npm login
@@ -121,12 +121,12 @@ npm test
 npm publish          # runs prepublishOnly → build:prod
 ```
 
-Verify: `npm view gsc-mcp`, `npx -y gsc-mcp --help`. Bump `version` in `package.json` for releases. Scoped publish needs `"publishConfig": { "access": "public" }`.
+Verify: `npm view searchconsole-mcp`, `npx -y searchconsole-mcp --help`. Bump `version` in `package.json` for releases. Scoped publish needs `"publishConfig": { "access": "public" }`.
 
 ## Docs and registry
 
 - **README.md** — user install, MCP client config, auth, troubleshooting, tool reference.
-- **smithery.yaml** — stdio via `npx -y gsc-mcp`; keep in sync if the npm package name or start command changes.
+- **smithery.yaml** — stdio via `npx -y searchconsole-mcp`; keep in sync if the npm package name or start command changes.
 
 ## Verification checklist (before claiming done)
 

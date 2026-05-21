@@ -21,9 +21,9 @@ function getArg(argv: string[], flag: string, envVar?: string): string | undefin
 }
 
 export function printHelp(write: (text: string) => void): void {
-    write(`gsc-mcp — Google Search Console MCP server (read-only)
+    write(`searchconsole-mcp — Google Search Console MCP server (read-only)
 
-Usage: gsc-mcp [options]
+Usage: searchconsole-mcp [options]
 
 Options:
   --transport <type>   Transport: stdio (default) or http
@@ -47,7 +47,7 @@ HTTP security:
   Default bind is loopback (127.0.0.1). Do not use 0.0.0.0 on untrusted networks.
 
 Examples:
-  npx gsc-mcp
+  npx searchconsole-mcp
   node dist/server.js --transport http --port 3000
 `);
 }

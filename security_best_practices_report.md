@@ -1,4 +1,4 @@
-# Security best practices report — gsc-mcp
+# Security best practices report — searchconsole-mcp
 
 **Date:** 2026-05-21  
 **Last updated:** 2026-05-21 (post-remediation)  

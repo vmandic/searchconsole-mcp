@@ -12,7 +12,7 @@ const argv = process.argv.slice(2);
 const parsed = parseCli(argv);
 
 if (isCliParseError(parsed)) {
-    writeStderr(Buffer.from(`[gsc-mcp] Error: ${parsed.error}\n`));
+    writeStderr(Buffer.from(`[searchconsole-mcp] Error: ${parsed.error}\n`));
     process.exit(1);
 }
 
@@ -56,10 +56,10 @@ async function main() {
     const transport = new mcpStdio.StdioServerTransport();
     await server.connect(transport);
 
-    console.error('[gsc-mcp] Server started, waiting for connections...');
+    console.error('[searchconsole-mcp] Server started, waiting for connections...');
 
     const shutdown = () => {
-        console.error('[gsc-mcp] Shutting down...');
+        console.error('[searchconsole-mcp] Shutting down...');
         server.close().then(() => process.exit(0));
     };
     process.on('SIGTERM', shutdown);
@@ -67,14 +67,14 @@ async function main() {
 }
 
 process.on('uncaughtException', (err) => {
-    console.error('[gsc-mcp] Uncaught exception:', formatErrorForLog(err));
+    console.error('[searchconsole-mcp] Uncaught exception:', formatErrorForLog(err));
 });
 
 process.on('unhandledRejection', (reason) => {
-    console.error('[gsc-mcp] Unhandled rejection:', formatErrorForLog(reason));
+    console.error('[searchconsole-mcp] Unhandled rejection:', formatErrorForLog(reason));
 });
 
 main().catch((err) => {
-    console.error('[gsc-mcp] Fatal error:', formatErrorForLog(err));
+    console.error('[searchconsole-mcp] Fatal error:', formatErrorForLog(err));
     process.exit(1);
 });

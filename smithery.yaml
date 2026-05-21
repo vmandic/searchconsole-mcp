@@ -7,5 +7,5 @@ startCommand:
   commandFunction: |-
     () => ({
       command: 'npx',
-      args: ['-y', 'gsc-mcp']
+      args: ['-y', 'searchconsole-mcp']
     })

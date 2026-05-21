@@ -4,7 +4,7 @@ import { SERVER_NAME, SERVER_VERSION, GSC_READONLY_SCOPE, ADC_SCOPES_GSC_ONLY } 
 
 describe('config', () => {
     it('exports stable server identity', () => {
-        assert.equal(SERVER_NAME, 'gsc-mcp');
+        assert.equal(SERVER_NAME, 'searchconsole-mcp');
         assert.match(SERVER_VERSION, /^\d+\.\d+\.\d+/);
     });
 

@@ -99,7 +99,7 @@ export async function startHttpTransport(
 
                 await transport.handleRequest(req, res, body);
             } catch (error) {
-                console.error('[gsc-mcp] Error handling MCP request:', formatErrorForLog(error));
+                console.error('[searchconsole-mcp] Error handling MCP request:', formatErrorForLog(error));
                 if (!res.headersSent) {
                     const err = jsonRpcError(500, -32603, 'Internal server error');
                     res.writeHead(err.status, { 'Content-Type': 'application/json' });
@@ -124,16 +124,16 @@ export async function startHttpTransport(
     });
 
     httpServer.listen(port, host, () => {
-        console.error(`[gsc-mcp] Streamable HTTP server listening on http://${host}:${port}/mcp`);
+        console.error(`[searchconsole-mcp] Streamable HTTP server listening on http://${host}:${port}/mcp`);
         if (isPublicBind(host)) {
             console.error(
-                '[gsc-mcp] WARNING: HTTP is bound to all interfaces. Anyone on the network can use your Google credentials via MCP.'
+                '[searchconsole-mcp] WARNING: HTTP is bound to all interfaces. Anyone on the network can use your Google credentials via MCP.'
             );
         }
     });
 
     const shutdown = async () => {
-        console.error('[gsc-mcp] Shutting down HTTP server...');
+        console.error('[searchconsole-mcp] Shutting down HTTP server...');
         for (const sid of Object.keys(transports)) {
             try {
                 await transports[sid].close();
