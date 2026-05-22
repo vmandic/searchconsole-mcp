@@ -64,6 +64,8 @@ Use it when you want:
 
 **Input validation** — Tool arguments are validated with Zod (dates, URLs, row limits, allowlisted dimensions).
 
+**Optional TOON output** — Set `GSC_OUTPUT_FORMAT=toon` to return compact [TOON](https://github.com/toon-format/toon) payloads (fewer tokens on search analytics and list tools).
+
 **Clear errors** — Failures return MCP text with `isError: true` and actionable messages (auth, `site_url` format, quota).
 
 ---
@@ -681,7 +683,10 @@ searchconsole-mcp [--transport stdio|http] [--host <addr>] [--port <n>] [--versi
 | `--transport` / `GSC_MCP_TRANSPORT` | `stdio` | `stdio` or `http` |
 | `--host` / `GSC_MCP_HOST` | `127.0.0.1` | HTTP bind address |
 | `--port` / `GSC_MCP_PORT` | `3000` | HTTP port |
+| `GSC_OUTPUT_FORMAT` | `json` | Tool result encoding: `json` (default) or `toon` ([TOON](https://github.com/toon-format/toon)) for fewer tokens on tabular GSC data |
 | `GOOGLE_APPLICATION_CREDENTIALS` | — | Path to service account JSON |
+
+**TOON output** — Set `GSC_OUTPUT_FORMAT=toon` in the MCP server env (Cursor `env` block, Claude config, etc.). Successful tool responses start with `format: toon` followed by TOON-encoded data. Search analytics rows use tab-separated tabular encoding with dimension names from your request (e.g. `query`, `page`). URL inspection stays JSON because nested payloads rarely benefit from TOON.
 
 ### Smithery
 

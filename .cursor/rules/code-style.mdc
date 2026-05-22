@@ -22,7 +22,7 @@ alwaysApply: false
 
 - **`installStdioGuard()`** at startup. No `console.log` on stdout path.
 - Operator logs: **`console.error`** with `[searchconsole-mcp]` prefix.
-- Tool text: **`sanitizeToolError`**; success via **`jsonResult`**.
+- Tool text: **`sanitizeToolError`**; success via **`formatToolResult`** (`GSC_OUTPUT_FORMAT`).
 
 ## Tests
 

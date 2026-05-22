@@ -2,6 +2,18 @@
 
 All notable changes to this project are documented here. Versioning follows [Semantic Versioning](https://semver.org/). Releases are tagged on GitHub to match `package.json`.
 
+## [1.1.0] - 2026-05-22
+
+### Added
+
+- Optional **TOON** tool output via `GSC_OUTPUT_FORMAT=toon` ([Token-Oriented Object Notation](https://github.com/toon-format/toon)) for fewer tokens on tabular GSC responses.
+- `src/output-format.ts` with search analytics row flattening (dimension names from request) and tab-delimited TOON encoding.
+- URL inspection remains JSON when TOON is enabled (nested payloads).
+
+### Notes
+
+- Default output is unchanged (`json`). Set `GSC_OUTPUT_FORMAT=toon` in the MCP client `env` block to opt in.
+
 ## [1.0.1] - 2026-05-21
 
 ### Added
@@ -30,5 +42,6 @@ First public release.
 - npm package is **scoped** (`@vmandic/searchconsole-mcp`) because unscoped `searchconsole-mcp` is blocked as too similar to [`search-console-mcp`](https://www.npmjs.com/package/search-console-mcp).
 - Distribution is via **npm**, not GitHub Packages (see [docs/RELEASES.md](docs/RELEASES.md)).
 
+[1.1.0]: https://github.com/vmandic/searchconsole-mcp/releases/tag/v1.1.0
 [1.0.1]: https://github.com/vmandic/searchconsole-mcp/releases/tag/v1.0.1
 [1.0.0]: https://github.com/vmandic/searchconsole-mcp/releases/tag/v1.0.0

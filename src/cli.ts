@@ -37,6 +37,7 @@ Environment:
   GSC_MCP_TRANSPORT               Same as --transport
   GSC_MCP_PORT                    Same as --port
   GSC_MCP_HOST                    Same as --host
+  GSC_OUTPUT_FORMAT               Tool payload format: json (default) or toon
 
 Auth (Application Default Credentials):
   gcloud auth application-default login --scopes=${ADC_SCOPES_GSC_ONLY}

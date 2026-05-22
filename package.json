@@ -1,6 +1,6 @@
 {
   "name": "@vmandic/searchconsole-mcp",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "Read-only Google Search Console MCP server for Cursor and other MCP clients.",
   "type": "module",
   "bin": {
@@ -49,6 +49,7 @@
   "dependencies": {
     "@googleapis/searchconsole": "^6.0.1",
     "@modelcontextprotocol/sdk": "^1.27.1",
+    "@toon-format/toon": "^2.3.0",
     "google-auth-library": "^10.6.2",
     "zod": "^3.25.0"
   },

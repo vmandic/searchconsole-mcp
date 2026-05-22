@@ -17,6 +17,7 @@ alwaysApply: false
 | `tools/gsc*.ts` | Thin GSC API wrappers |
 | `clients.ts` | `getGscClient` + test overrides |
 | `errors.ts` | `sanitizeToolError`, `formatErrorForLog` |
+| `output-format.ts` | `formatToolResult`, TOON/JSON tool payloads |
 | `http-*.ts` | Optional HTTP; caps in `http-config.ts` |
 
 ## New tool checklist

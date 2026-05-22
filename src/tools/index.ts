@@ -1,6 +1,7 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { GoogleAuth } from 'google-auth-library';
 import { sanitizeToolError } from '../errors.js';
+import { formatToolResult, type ToolTextResult } from '../output-format.js';
 import { gscSearchAnalytics } from './gscSearchAnalytics.js';
 import { gscInspectUrl } from './gscInspectUrl.js';
 import { gscListSitemaps } from './gscSitemaps.js';
@@ -10,12 +11,6 @@ import {
     gscListSitemapsParams,
     gscSearchAnalyticsParams,
 } from './schemas.js';
-
-type ToolTextResult = { content: { type: 'text'; text: string }[]; isError?: boolean };
-
-function jsonResult(data: unknown): ToolTextResult {
-    return { content: [{ type: 'text', text: JSON.stringify(data, null, 2) }] };
-}
 
 function validationError(message: string): ToolTextResult {
     return {
@@ -62,7 +57,7 @@ export function registerGscTools(server: McpServer, auth: GoogleAuth): void {
         {},
         async () => {
             try {
-                return jsonResult(await gscListSites(auth));
+                return formatToolResult(await gscListSites(auth));
             } catch (err) {
                 return {
                     content: [{ type: 'text', text: sanitizeToolError(err) }],
@@ -87,7 +82,12 @@ export function registerGscTools(server: McpServer, auth: GoogleAuth): void {
             aggregation_type: gscSearchAnalyticsParams.shape.aggregation_type,
             data_state: gscSearchAnalyticsParams.shape.data_state,
         },
-        safeTool(gscSearchAnalyticsParams, async (params) => jsonResult(await gscSearchAnalytics(auth, params)))
+        safeTool(gscSearchAnalyticsParams, async (params) =>
+            formatToolResult(await gscSearchAnalytics(auth, params), {
+                kind: 'search_analytics',
+                dimensions: params.dimensions,
+            })
+        )
     );
 
     server.tool(
@@ -98,7 +98,9 @@ export function registerGscTools(server: McpServer, auth: GoogleAuth): void {
             inspection_url: gscInspectUrlParams.shape.inspection_url,
             language_code: gscInspectUrlParams.shape.language_code,
         },
-        safeTool(gscInspectUrlParams, async (params) => jsonResult(await gscInspectUrl(auth, params)))
+        safeTool(gscInspectUrlParams, async (params) =>
+            formatToolResult(await gscInspectUrl(auth, params), { kind: 'inspect' })
+        )
     );
 
     server.tool(
@@ -107,6 +109,6 @@ export function registerGscTools(server: McpServer, auth: GoogleAuth): void {
         {
             site_url: gscListSitemapsParams.shape.site_url,
         },
-        safeTool(gscListSitemapsParams, async ({ site_url }) => jsonResult(await gscListSitemaps(auth, site_url)))
+        safeTool(gscListSitemapsParams, async ({ site_url }) => formatToolResult(await gscListSitemaps(auth, site_url)))
     );
 }
