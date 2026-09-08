@@ -2,6 +2,16 @@
 
 All notable changes to this project are documented here. Versioning follows [Semantic Versioning](https://semver.org/). Releases are tagged on GitHub to match `package.json`.
 
+## [1.1.1] - 2026-09-08
+
+### Fixed
+
+- Dependency updates to clear high-severity `npm audit` findings (`@toon-format/toon`, `hono`, `fast-uri`, `ip-address`, and related transitive packages).
+
+### Notes
+
+- No runtime API or MCP tool changes since 1.1.0.
+
 ## [1.1.0] - 2026-05-22
 
 ### Added
@@ -42,6 +52,7 @@ First public release.
 - npm package is **scoped** (`@vmandic/searchconsole-mcp`) because unscoped `searchconsole-mcp` is blocked as too similar to [`search-console-mcp`](https://www.npmjs.com/package/search-console-mcp).
 - Distribution is via **npm**, not GitHub Packages (see [docs/RELEASES.md](docs/RELEASES.md)).
 
+[1.1.1]: https://github.com/vmandic/searchconsole-mcp/releases/tag/v1.1.1
 [1.1.0]: https://github.com/vmandic/searchconsole-mcp/releases/tag/v1.1.0
 [1.0.1]: https://github.com/vmandic/searchconsole-mcp/releases/tag/v1.0.1
 [1.0.0]: https://github.com/vmandic/searchconsole-mcp/releases/tag/v1.0.0
